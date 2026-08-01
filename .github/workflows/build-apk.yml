@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - master
   workflow_dispatch:
 
 jobs:
@@ -20,8 +21,8 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Setup Gradle Wrapper
-        run: gradle wrapper
+      - name: Setup Gradle 8.4
+        run: gradle wrapper --gradle-version 8.4
 
       - name: Build APK
         run: ./gradlew assembleDebug
