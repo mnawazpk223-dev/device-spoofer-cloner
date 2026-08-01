@@ -23,5 +23,6 @@ android {
 dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.9.0'
-    implementation 'com.github.fblackbox:blackbox:1.0.0'
+    // Updated working link for the Virtual Sandbox Engine
+    implementation 'com.github.mtechenginee:BlackBox:1.6.0'
 }
