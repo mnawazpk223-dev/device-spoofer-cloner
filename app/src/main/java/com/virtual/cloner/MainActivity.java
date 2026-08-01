@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -20,6 +21,7 @@ import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -31,10 +33,22 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         rvApps = findViewById(R.id.rvApps);
-        rvApps.setLayoutManager(new LinearLayoutManager(this));
+        if (rvApps != null) {
+            rvApps.setLayoutManager(new LinearLayoutManager(this));
+        }
 
-        List<AppItem> installedApps = getInstalledUserApps();
-        rvApps.setAdapter(new AppAdapter(installedApps));
+        loadAppsAsync();
+    }
+
+    private void loadAppsAsync() {
+        Executors.newSingleThreadExecutor().execute(() -> {
+            List<AppItem> list = getInstalledUserApps();
+            runOnUiThread(() -> {
+                if (rvApps != null) {
+                    rvApps.setAdapter(new AppAdapter(list));
+                }
+            });
+        });
     }
 
     private List<AppItem> getInstalledUserApps() {
@@ -43,12 +57,19 @@ public class MainActivity extends AppCompatActivity {
         List<ApplicationInfo> packages = pm.getInstalledApplications(PackageManager.GET_META_DATA);
 
         for (ApplicationInfo packageInfo : packages) {
-            // Filter out system apps, focus on installed user apps
-            if ((packageInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
-                String name = pm.getApplicationLabel(packageInfo).toString();
-                String pkg = packageInfo.packageName;
-                Drawable icon = pm.getApplicationIcon(packageInfo);
-                list.add(new AppItem(name, pkg, icon));
+            try {
+                // Ignore self and core system apps
+                if (packageInfo.packageName.equals(getPackageName())) continue;
+                
+                if ((packageInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
+                    CharSequence labelSeq = pm.getApplicationLabel(packageInfo);
+                    String name = labelSeq != null ? labelSeq.toString() : packageInfo.packageName;
+                    String pkg = packageInfo.packageName;
+                    Drawable icon = pm.getApplicationIcon(packageInfo);
+                    list.add(new AppItem(name, pkg, icon));
+                }
+            } catch (Exception e) {
+                // Skip problematic apps safely without crashing
             }
         }
         return list;
@@ -85,10 +106,13 @@ public class MainActivity extends AppCompatActivity {
             AppItem app = apps.get(position);
             holder.tvName.setText(app.name);
             holder.tvPkg.setText(app.packageName);
-            holder.imgIcon.setImageDrawable(app.icon);
+            
+            if (app.icon != null) {
+                holder.imgIcon.setImageDrawable(app.icon);
+            }
 
             holder.btnClone.setOnClickListener(v -> 
-                Toast.makeText(MainActivity.this, "Cloning " + app.name + "...", Toast.LENGTH_SHORT).show()
+                Toast.makeText(MainActivity.this, "Cloning " + app.name, Toast.LENGTH_SHORT).show()
             );
         }
 
