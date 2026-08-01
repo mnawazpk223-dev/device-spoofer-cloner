@@ -1,26 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#F7F9FC"
     android:orientation="vertical"
-    android:gravity="center"
-    android:padding="16dp">
+    android:padding="20dp">
 
+    <!-- Header Section (One UI Style) -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="24dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Virtual Cloner"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:textColor="#1A1C1E" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Device Spoofer &amp; Multi-Account Engine"
+            android:textSize="14sp"
+            android:textColor="#74777F" />
+    </LinearLayout>
+
+    <!-- Spoof Status Card -->
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="24dp"
+        app:cardElevation="0dp"
+        app:strokeWidth="1dp"
+        app:strokeColor="#E0E2EC"
+        app:cardBackgroundColor="#FFFFFF"
+        android:layout_marginBottom="20dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Device Identity Status"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#1A1C1E" />
+
+            <TextView
+                android:id="@+id/tvDeviceStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Spoofer Engine Active • Default Profile"
+                android:textSize="13sp"
+                android:textColor="#006494" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- Action Section Header -->
     <TextView
-        android:id="@+id/welcome_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Virtual Cloner &amp; Device Spoofer"
-        android:textSize="22sp"
+        android:text="Installed Apps (Tap to Clone)"
+        android:textSize="18sp"
         android:textStyle="bold"
-        android:textColor="#000000" />
+        android:textColor="#1A1C1E"
+        android:layout_marginBottom="12dp" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:text="App initialized successfully!"
-        android:textSize="16sp"
-        android:textColor="#555555" />
+    <!-- App Cloning List -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvApps"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:overScrollMode="never" />
 
 </LinearLayout>
